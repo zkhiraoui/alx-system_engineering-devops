@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -p | paste -sd ','
+ls -ap | paste -sd ', '
