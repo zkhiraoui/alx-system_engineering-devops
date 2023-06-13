@@ -1,1 +1,2 @@
 #!/bin/bash
+echo $(( 16#$WATER + 16#$STIR ))
