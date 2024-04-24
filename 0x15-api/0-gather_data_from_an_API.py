@@ -1,31 +1,27 @@
 #!/usr/bin/python3
-"""
-returns information about his/her TODO list progress for a
-given employee ID using a REST API
-"""
+"""Returns task list information for a given employee ID."""
 import requests
-from sys import argv
+import sys
 
-
-def get_todo():
-    """returns employee's TODO list progress"""
-    r_user = requests.get('https://jsonplaceholder.typicode.com/users/{}'
-                          .format(argv[1]))
-
-    r_todo_true = requests.get('https://jsonplaceholder.typicode.com/todos?'
-                               'userId={}&&completed=true'.format(argv[1]))
-    r_todo_false = requests.get('https://jsonplaceholder.typicode.com/todos?'
-                                'userId={}&&completed=false'.format(argv[1]))
-    try:
-        user_dict = r_user.json()
-        true_todo_dict = r_todo_true.json()
-        false_todo_dict = r_todo_false.json()
-        print("Employee {} is done with tasks({}/{}):".
-              format(user_dict['name'], len(true_todo_dict),
-                     len(false_todo_dict) + len(true_todo_dict)))
-        for task in true_todo_dict:
-            print("\t {}".format(task['title']))
-    except:
-        pass
 if __name__ == "__main__":
-    get_todo()
+    base_url = "https://jsonplaceholder.typicode.com/"
+    employee_id = sys.argv[1]
+
+    employee_info = requests.get(
+        base_url + "users/{}".format(employee_id)
+    ).json()
+    tasks = requests.get(
+        base_url + "todos",
+        params={"userId": employee_id}
+    ).json()
+
+    completed_tasks = [
+        t.get("title") for t in tasks if t.get("completed") is True
+    ]
+    employee_name = employee_info.get("name")
+    num_completed = len(completed_tasks)
+    num_tasks = len(tasks)
+
+    print(f"Employee {employee_name} is done with tasks "
+          f"({num_completed}/{num_tasks}):")
+    [print(f"\t {task}") for task in completed_tasks]
