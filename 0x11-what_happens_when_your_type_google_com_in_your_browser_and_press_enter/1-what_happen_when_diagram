@@ -1,0 +1,19 @@
+﻿*Note: The diagram depicts the waft of a request while coming into `https://www.Google.Com` in a browser and pressing Enter.*
+
+1. **DNS Resolution**: The browser sends a DNS request to remedy `www.Google.Com` to its corresponding IP cope with.
+
+2. **Request Hits Server IP on Appropriate Port**: The browser sends an HTTP request to the IP address obtained inside the preceding step, the use of the standard HTTPS port (443).
+
+3. **Traffic is Encrypted**: The verbal exchange among the browser and the server is encrypted the usage of the SSL/TLS protocol, indicated by way of the HTTPS prefix.
+
+4. **Traffic Goes Through Firewall**: The request passes thru a firewall, which acts as a security barrier, permitting legitimate requests and blocking ability threats.
+
+5. **Request is Distributed thru Load Balancer**: If applicable, a load balancer distributes the request to one of the to be had web servers to make certain even load distribution.
+
+6. **Web Server Answers the Request**: The selected internet server techniques the request and generates the correct response.
+
+7. **Application Server Generates the Web Page**: In cases where there is an application server, it handles dynamic content era, processing commercial enterprise logic, and so on.
+
+8. **Application Server Requests Data from the Database**: If needed, the application server interacts with the database to retrieve relevant data.
+
+For this diagram, I used gliffy,
