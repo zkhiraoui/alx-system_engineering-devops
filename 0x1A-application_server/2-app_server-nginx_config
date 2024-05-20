@@ -1,27 +1,34 @@
 server {
     listen 80;
     listen [::]:80 default_server;
+
+    # Add a custom header to responses
     add_header X-Served-By $hostname;
-    root   /etc/nginx/html;
-    index  index.html index.htm;
+
+    # Set the root directory for the server
+    root /var/www/html;
+    index index.html index.htm;
+
+    # Server name (wildcard)
+    server_name _;
+
+    # Redirect /redirect_me to a different URL with a 301 status
     location /redirect_me {
         return 301;
     }
-    root /var/www/html;
 
-    server_name _;
-
+    # Proxy requests to /airbnb-onepage to a backend server
     location /airbnb-onepage {
         proxy_pass http://0.0.0.0:5000/airbnb-onepage;
     }
 
+    # Serve static files from a different directory for /hbnb_static
     location /hbnb_static {
         alias /data/web_static/current/;
     }
 
-    location /{
-        # First attempt to serve request as file, then
-        # as directory, then fall back to displaying a 404.
+    # Handle other requests
+    location / {
         try_files $uri $uri/ =404;
-     }
+    }
 }
