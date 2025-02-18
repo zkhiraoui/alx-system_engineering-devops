@@ -1,46 +1,36 @@
 #!/usr/bin/env bash
-# This script automates the installation, configuration, and starting of a web server using Nginx.
+# Configures a new ubuntu machine by installing
+# Nginx where it should be listening on port 80
+# Serve a page that would return a Hello World string
+#
 
-# Update package information
-apt-get update
 
-# Install Nginx
-apt-get -y install nginx
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && \
+         sudo apt-get install nginx -y
 
-# Allow incoming HTTP traffic through the firewall
+echo -e "\nSetting up some minor stuff.\n"
+
+# starting nginx service
+sudo service nginx start
+
+# allowing nginx on firewall
 sudo ufw allow 'Nginx HTTP'
 
-# Create directory for web content
-mkdir -p /var/www/html/
-
-# Set permissions for web content directory
+# Give the user ownership to website files for easy editing
+sudo chown -R "$USER":"$USER" /var/www/html
 sudo chmod -R 755 /var/www
 
-# Create a basic index.html page
-echo 'Hello World!' > /var/www/html/index.html
+# Backup default index
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
 
-# Define the Nginx server configuration
-SERVER_CONFIG=\
-"server {
-    listen 80 default_server;
-    listen [::]:80 default_server;
-    root /var/www/html;
-    index index.html index.htm index.nginx-debian.html;
-    server_name _;
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-    if (\$request_filename ~ redirect_me) {
-        rewrite ^ https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;
-    }
-}"
+# Creating new index
+echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
 
-# Apply the custom server configuration
-bash -c "echo -e '$SERVER_CONFIG' > /etc/nginx/sites-enabled/default"
+# Setting up /redirect_me to a youtube video
+sudo sed -i '24i\       rewrite ^/redirect_me https://www.google.com/ permanent;' /etc/nginx/sites-available/default
 
-# Check if Nginx is running and start/restart accordingly
-if [ "$(pgrep -c nginx)" -le 0 ]; then
-    service nginx start
-else
-    service nginx restart
-fi
+# Restarting nginx
+sudo service nginx restart
+
+echo -e "\nCompleted.\n"
